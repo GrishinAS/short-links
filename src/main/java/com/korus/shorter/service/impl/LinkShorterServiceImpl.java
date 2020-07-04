@@ -1,26 +1,26 @@
 package com.korus.shorter.service.impl;
 
 import com.korus.shorter.service.LinkShorterService;
+import org.springframework.stereotype.Service;
 
+@Service
 public class LinkShorterServiceImpl implements LinkShorterService {
-    public final String Alphabet = "abcdefghijklmnopqrstuvwxyz0123456789";
-    public final int Base = Alphabet.length();
 
     @Override
-    public String encode(int num) {
-        StringBuilder sb = new StringBuilder();
-        while ( num > 0 ) {
-            sb.append( Alphabet.charAt( num % Base ) );
-            num /= Base;
+    public String encode(String longLink) {
+        StringBuilder stringBuilder = new StringBuilder();
+        String[] split = longLink.split("[?/\\\\ #]");
+        for (String part : split) {
+            if (!part.isEmpty()) {
+                stringBuilder.append(part, 0, 1);
+                //stringBuilder.append(part, part.length() - 1, part.length()); To decrease collisions
+            }
         }
-        return sb.reverse().toString();
+        return stringBuilder.toString();
     }
 
     @Override
-    public int decode(String link) {
-        int num = 0;
-        for ( int i = 0; i < link.length(); i++ )
-            num = num * Base + Alphabet.indexOf(link.charAt(i));
-        return num;
+    public String decode(String link) {
+        return null; //Do I need this?
     }
 }

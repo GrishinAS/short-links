@@ -9,7 +9,7 @@ public class LinkHandlerServiceImplTest {
 
   @Before
   public void init() {
-    aggregatorService = new LinkHandlerServiceImpl();
+    //aggregatorService = new LinkHandlerServiceImpl();
   }
 
   @org.junit.Test

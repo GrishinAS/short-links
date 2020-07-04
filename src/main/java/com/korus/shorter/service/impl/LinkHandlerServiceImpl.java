@@ -4,6 +4,7 @@ import com.korus.shorter.model.CreateLinkRequest;
 import com.korus.shorter.model.dao.Link;
 import com.korus.shorter.model.dao.LinkCrudService;
 import com.korus.shorter.service.LinkHandlerService;
+import com.korus.shorter.service.LinkShorterService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,27 +19,24 @@ import java.time.ZoneId;
 public class LinkHandlerServiceImpl implements LinkHandlerService {
 
     private final LinkCrudService linkCrudService;
+    private final LinkShorterService linkShorterService;
 
     @Autowired
-    public LinkHandlerServiceImpl(LinkCrudService linkCrudService) {
+    public LinkHandlerServiceImpl(LinkCrudService linkCrudService, LinkShorterService linkShorterService) {
         this.linkCrudService = linkCrudService;
+        this.linkShorterService = linkShorterService;
     }
 
     @Override
     public void doShort(CreateLinkRequest request) {
       String address = request.getAddress();
-        String shortLink = doShortening(address); //TODO Replace by shorting algo
+        String shortLink = linkShorterService.encode(address);
         Link createdLink = Link.builder()
                 .fullLink(address)
                 .shortLink(shortLink)
                 .createTime(Timestamp.valueOf(LocalDateTime.now(ZoneId.of("UTC"))))
                 .build();
         linkCrudService.create(createdLink);
-    }
-
-    private String doShortening(String address) {
-
-        return address.substring(10);
     }
 
     @Override
