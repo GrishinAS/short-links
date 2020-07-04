@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
-@RestController("shorter")
+@RestController
 public class ShorterController {
 
   private final LinkHandlerService linkHandlerService;
@@ -17,17 +17,17 @@ public class ShorterController {
   }
 
   @PostMapping("/link") //TODO authorization
-  public void createLink(@RequestBody CreateLinkRequest request) {
-    linkHandlerService.doShort(request);
+  public String createLink(@RequestBody CreateLinkRequest request) {
+    return linkHandlerService.doShort(request);
   }
 
   @GetMapping("/link")
-  public String getLink(@PathVariable String shortLink) {
+  public String getLink(@RequestParam String shortLink) {
     return linkHandlerService.getLink(shortLink);
   }
 
   @GetMapping("/redirect")
-  public RedirectView redirectToLink(@PathVariable String shortLink) {
+  public RedirectView redirectToLink(@RequestParam String shortLink) {
     String link = linkHandlerService.getLink(shortLink);
     return new RedirectView(link);
   }

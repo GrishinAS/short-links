@@ -7,7 +7,7 @@ import java.util.List;
 public interface LinkHandlerService {
 
 
-  void doShort(CreateLinkRequest request);
+  String doShort(CreateLinkRequest request);
 
   String getLink(String shortLink);
 }

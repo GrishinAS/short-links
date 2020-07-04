@@ -28,7 +28,7 @@ public class LinkHandlerServiceImpl implements LinkHandlerService {
     }
 
     @Override
-    public void doShort(CreateLinkRequest request) {
+    public String doShort(CreateLinkRequest request) {
       String address = request.getAddress();
         String shortLink = linkShorterService.encode(address);
         Link createdLink = Link.builder()
@@ -37,6 +37,7 @@ public class LinkHandlerServiceImpl implements LinkHandlerService {
                 .createTime(Timestamp.valueOf(LocalDateTime.now(ZoneId.of("UTC"))))
                 .build();
         linkCrudService.create(createdLink);
+        return shortLink;
     }
 
     @Override
@@ -46,6 +47,6 @@ public class LinkHandlerServiceImpl implements LinkHandlerService {
         LocalDateTime tenMinutesBeforeNow = LocalDateTime.now(ZoneId.of("UTC")).minusMinutes(10);
         if(createTime.before(Timestamp.valueOf(tenMinutesBeforeNow)))
             throw new RestClientException("Link is outdated");
-        return link.getShortLink();
+        return link.getFullLink();
     }
 }

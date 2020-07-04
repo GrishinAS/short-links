@@ -3,22 +3,24 @@ package com.korus.shorter.model.dao;
 import org.apache.commons.collections4.IterableUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import java.util.Collection;
 
 @Service
 public class LinkCrudService {
   private final LinkRepository repo;
-  private SessionFactory sessionFactory;
+  @PersistenceContext
+  private EntityManager entityManger;
 
   @Autowired
-  public LinkCrudService(LinkRepository repo, SessionFactory sessionFactory) {
+  public LinkCrudService(LinkRepository repo) {
     this.repo = repo;
-    this.sessionFactory = sessionFactory;
   }
 
   public int create(Link link) {
@@ -47,9 +49,8 @@ public class LinkCrudService {
   }
 
   public Link findByShortLink(String shortLink) {
-    Session session = sessionFactory.getCurrentSession();
-    Query query = session.createQuery("From links where short_link=:link");
+    Query query = entityManger.createQuery("select l from Link l where short_link=:link", Link.class);
     query.setParameter("link", shortLink);
-    return (Link) query.uniqueResult();
+    return (Link) query.getSingleResult();
   }
 }
