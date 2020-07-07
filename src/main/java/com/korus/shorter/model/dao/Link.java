@@ -26,8 +26,6 @@ public class Link {
   @Size(min = 1)
   @Column(name = "short_link")
   private String shortLink;
-//  @Size(min = 1)
-//  private User user; TODO finish connect to users
 
   private Timestamp createTime;
 }

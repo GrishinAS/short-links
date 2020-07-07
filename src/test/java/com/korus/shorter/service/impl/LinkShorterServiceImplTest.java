@@ -5,8 +5,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 public class LinkShorterServiceImplTest {
     private LinkShorterService linkShorterService = null;
     @Before
@@ -15,7 +13,7 @@ public class LinkShorterServiceImplTest {
     }
 
     @Test
-    public void linkReadableAfterDecoding() {
+    public void linkEncodingAsItShouldBe() {
         String initialLink = "https://us-east-2.console.aws.amazon.com/ec2/v2/home?region=us-east-2#Instances:sort=instanceId";
         String encodedLink = linkShorterService.encode(initialLink);
         Assert.assertEquals(encodedLink, "huevhrI");

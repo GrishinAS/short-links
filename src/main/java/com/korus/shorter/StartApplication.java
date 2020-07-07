@@ -11,8 +11,6 @@ import java.util.concurrent.Semaphore;
 @SpringBootApplication
 public class StartApplication {
 
-  private int maxParallelLinkGeneration;
-
   public static void main(String[] args) {
     SpringApplication.run(StartApplication.class, args);
   }

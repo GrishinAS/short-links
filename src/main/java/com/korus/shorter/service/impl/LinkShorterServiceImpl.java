@@ -13,14 +13,9 @@ public class LinkShorterServiceImpl implements LinkShorterService {
         for (String part : split) {
             if (!part.isEmpty()) {
                 stringBuilder.append(part, 0, 1);
-                //stringBuilder.append(part, part.length() - 1, part.length()); To decrease collisions
+                //stringBuilder.append(part, part.length() - 1, part.length()); To decrease collisions maybe
             }
         }
         return stringBuilder.toString();
-    }
-
-    @Override
-    public String decode(String link) {
-        return null; //Do I need this?
     }
 }
