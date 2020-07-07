@@ -7,29 +7,36 @@ import com.korus.shorter.service.LinkHandlerService;
 import com.korus.shorter.service.LinkShorterService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.concurrent.Semaphore;
 
 @Service
+@PropertySource("classpath:application.properties")
 @Slf4j
 public class LinkHandlerServiceImpl implements LinkHandlerService {
 
     private final LinkCrudService linkCrudService;
     private final LinkShorterService linkShorterService;
+    private Semaphore parallelLinkGeneration;
 
     @Autowired
-    public LinkHandlerServiceImpl(LinkCrudService linkCrudService, LinkShorterService linkShorterService) {
+    public LinkHandlerServiceImpl(LinkCrudService linkCrudService, LinkShorterService linkShorterService, Semaphore parallelLinkGeneration) {
         this.linkCrudService = linkCrudService;
         this.linkShorterService = linkShorterService;
+        this.parallelLinkGeneration = parallelLinkGeneration;
     }
 
     @Override
     public String doShort(CreateLinkRequest request) {
-      String address = request.getAddress();
+      try {
+        parallelLinkGeneration.acquire();
+        String address = request.getAddress();
         String shortLink = linkShorterService.encode(address);
         Link createdLink = Link.builder()
                 .fullLink(address)
@@ -37,7 +44,12 @@ public class LinkHandlerServiceImpl implements LinkHandlerService {
                 .createTime(Timestamp.valueOf(LocalDateTime.now(ZoneId.of("UTC"))))
                 .build();
         linkCrudService.create(createdLink);
+        parallelLinkGeneration.release();
         return shortLink;
+      } catch (InterruptedException e) {
+        log.error("Semaphore acquire exception", e);
+        throw new RestClientException("");
+      }
     }
 
     @Override

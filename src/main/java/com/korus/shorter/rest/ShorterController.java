@@ -16,7 +16,7 @@ public class ShorterController {
     this.linkHandlerService = linkHandlerService;
   }
 
-  @PostMapping("/link") //TODO authorization
+  @PostMapping("/link")
   public String createLink(@RequestBody CreateLinkRequest request) {
     return linkHandlerService.doShort(request);
   }
